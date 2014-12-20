@@ -2,6 +2,13 @@ var count = 0;
 
 var MainView = Puppets.View.extend({
   template: _.template('<li>My contents</li><li>hi</li>'),
+  initialize: function() {
+    this.on('render', this.onRender, this);
+  },
+
+  onRender: function() {
+    this.trigger('stuff');
+  }
 });
 
 var NewMainView = Puppets.View.extend({
@@ -10,7 +17,9 @@ var NewMainView = Puppets.View.extend({
   },
 
   onRender: function() {
-    // this.$el.html(count++);
+    this.listenTo(this.getChildView('div'), 'stuff', function() {
+      console.log('ok cool');
+    });
   },
 
   template: _.template('<div>thing</div>'),

@@ -1,11 +1,11 @@
 {
   "name": "puppets",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "homepage": "https://github.com/Puppets/puppets",
   "authors": [
     "Jmeas <jellyes2@gmail.com>"
   ],
-  "description": "A modern Backbone framework.",
+  "description": "Future Backbone.",
   "main": "dist/puppets.js",
   "keywords": [
     "backbone",

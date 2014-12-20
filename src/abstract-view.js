@@ -2,7 +2,7 @@
 // AbstractView
 // A view that adds basic functionality to
 // Backbone's view. It is not intended to be
-// used standalone: it is the foundation
+// used standalone; rather, it is the foundation
 // for Puppets' two views.
 //
 
@@ -32,18 +32,18 @@ var AbstractView = Backbone.View.extend({
     this.listenToModel(collection);
   },
 
+
+  // These four methods manage events specified via
+  // modelEvents and collectionEvents
   listenToModel: function() {
     Puppets.listenToObject(this.model, _.result(this, 'modelEvents'));
   },
-
   stopListeningToModel: function() {
     Puppets.stopListeningToObject(this.model, _.result(this, 'modelEvents'));
   },
-
   listenToCollection: function() {
     Puppets.listenToObject(this.model, _.result(this, 'modelEvents'));
   },
-
   stopListeningToCollection: function() {
     Puppets.stopListeningToObject(this.collection, _.result(this, 'collectionEvents'));
   },

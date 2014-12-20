@@ -1,3 +1,10 @@
-var Puppets = {};
+var previousPuppets = Backbone.Puppets();
 
-Puppets.VERSION = '0.0.1';
+var Puppets = Backbone.Puppets = {};
+
+Puppets.VERSION = '<%= version %>';
+
+Puppets.noConflict = function () {
+  Backbone.Puppets = previousPuppets;
+  return this;
+};

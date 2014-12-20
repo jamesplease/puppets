@@ -1,7 +1,7 @@
 //
 // View
-// A basic view that supports manually-managed
-// nested children
+// The primary view in Puppets, it supports
+// manually-managed nested children
 //
 
 var View = AbstractView.extend({
@@ -26,6 +26,8 @@ var View = AbstractView.extend({
     }
   },
 
+  // An intelligent render function. Renders the template,
+  // and does not destroy any nested views
   render: function(options) {
     this.trigger('before:render', this, options);
 
@@ -33,7 +35,7 @@ var View = AbstractView.extend({
     // easily sort through the children to find selectors. The
     // wrapper is removed at the end
     var htmlString = '<div>' + Puppets.renderTemplate(this.template) + '</div>';
-    var $domTree = $($.parseHTML(htmlString));
+    var $domTree = Puppets.$($.parseHTML(htmlString));
 
     // If our regions are empty, then we should instantiate
     // them if we have specified children views
@@ -58,6 +60,7 @@ var View = AbstractView.extend({
     return this;
   },
 
+  // Display `view` in the region specified by `selector`
   showChildView: function(selector, view, options) {
     var region = this._getRegion(selector);
     if (!region) { this._throwRegionError(); }
@@ -65,6 +68,7 @@ var View = AbstractView.extend({
     return this;
   },
 
+  // Retrieve the `view` contained in `selector`
   getChildView: function(selector) {
     return this._getRegion(selector).currentView();
   },
@@ -98,6 +102,7 @@ var View = AbstractView.extend({
     return this;
   },
 
+  // Add a hash of regions. Used internally to create the `childViews`
   _addRegions: function(regionDefinitions, $tree) {
     _.each(regionDefinitions, function(view, selector) {
       this._addRegion(selector, view, $tree);
@@ -105,6 +110,7 @@ var View = AbstractView.extend({
     return this;
   },
 
+  // The method that creates a new region
   _createRegion: function(options) {
     return new this.region(options);
   },
@@ -117,6 +123,7 @@ var View = AbstractView.extend({
     }, this);
   },
 
+  // Regions require that their selectors exist, otherwise this error is thrown
   _throwRegionError: function(selector) {
     throw new Error('The selector "' + selector + '" must exist to create a region.');
   }
