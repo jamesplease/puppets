@@ -1,11 +1,8 @@
 var MainView = Puppets.View.extend({
-  template: _.template('main view')
+  template: _.template('main view'),
 });
 
 var NewMainView = Puppets.View.extend({
-  initialize: function() {
-    window.newMain = this;
-  },
   template: _.template('new main view')
 });
 
@@ -14,7 +11,7 @@ var ModalView = Puppets.View.extend({
 });
 
 var RootView = Puppets.View.extend({
-  el: 'body',
+  el: '.root',
 
   // These will be created on instantiation
   childViews: {
@@ -26,8 +23,8 @@ var RootView = Puppets.View.extend({
   },
 
   // Change the footer view
-  changeFooter: function() {
-    this.showChildView('main', NewMainView);
+  changeFooter: function(show) {
+    this.showChildView('main', NewMainView, {force: show});
   }
 });
 

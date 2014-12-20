@@ -52,10 +52,22 @@ var AbstractView = Backbone.View.extend({
     Puppets.stopListeningToObject(this.collection, _.result(this, 'collectionEvents'));
   },
 
+  // Remove this view from the DOM, and remove its event handlers
   remove: function() {
     this.trigger('before:remove', this);
     Backbone.View.prototype.remove.apply(this, arguments);
     this.trigger('remove', this);
+    return this;
+  },
+
+  // Remove the view's event handlers without removing its
+  // element from the DOM. This is the method that is used
+  // when closing down nested views
+  dispose: function() {
+    this.trigger('before:dispose', this);
+    this.stopListening();
+    delete this._parent;
+    this.trigger('dispose', this);
     return this;
   }
 });

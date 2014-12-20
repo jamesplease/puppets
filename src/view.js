@@ -25,16 +25,32 @@ var View = AbstractView.extend({
   render: function(options) {
     this.trigger('before:render', this, options);
 
-    // Generate the new DOM tree
-    var htmlString = Puppets.renderTemplate(this.template);
-    var domTree = $.parseHTML(htmlString);
+    // Generate the new DOM tree. We wrap it in a div so that we can
+    // easily sort through the children to find selectors. The
+    // wrapper is removed at the end
+    var htmlString = '<div>' + Puppets.renderTemplate(this.template) + '</div>';
+    var $domTree = $($.parseHTML(htmlString));
 
-    // Create the regions and copy
-    // over the HTML from the current tree
+    // If our regions are empty, then we should instantiate all of them
+    if (_.isEmpty(this._regions)) {
+      this._addRegions(this.childViews, $domTree);
+    }
+
+    // Otherwise, we need to check each of them to see if they're empty
+    else {
+      var node, currentView;
+      _.each(this._regions, function(region) {
+        currentView = region.currentView();
+        if (currentView) {
+          $domTree.find(region.selector).replaceWith(region.cloneTree());
+        }
+      }, this);
+    }
 
     // Empty the contents of our element,
-    // then append the new tree
-    this.$el.empty().append(domTree);
+    // then append the new tree. We use .children()
+    // to remove the div wrapper from above
+    this.$el.empty().append($domTree.contents());
 
     this.trigger('render', this, options);
     return this;
@@ -60,15 +76,16 @@ var View = AbstractView.extend({
 
   // Create a new region. Optionally pass it a view
   // to display on creation
-  _addRegion: function(selector, definition) {
+  _addRegion: function(selector, definition, $tree) {
+    $tree = $tree || this.$el;
     // Don't override existing regions
     if (this._regions[selector]) { return; }
-    var el = this.$(selector)[0];
-    if (!el) { this._throwRegionError(selector); }
+    var $el = $tree.find(selector);
+    if (!$el) { this._throwRegionError(selector); }
     var fnDefinition = _.isFunction(definition);
     var options = {
       selector: selector,
-      el: el,
+      el: $el,
       view: fnDefinition ? definition : definition.view,
       viewOptions: fnDefinition ? {} : definition.options
     };
@@ -78,9 +95,9 @@ var View = AbstractView.extend({
     return this;
   },
 
-  _addRegions: function(regionDefinitions) {
+  _addRegions: function(regionDefinitions, $tree) {
     _.each(regionDefinitions, function(view, selector) {
-      this._addRegion(selector, view);
+      this._addRegion(selector, view, $tree);
     }, this);
     return this;
   },

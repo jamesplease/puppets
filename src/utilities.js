@@ -52,7 +52,7 @@ Puppets._listenToApi = function(obj, events, methodName) {
 // is undefined or null. Passes the 3rd params
 // as arguments to the property, if it is a method
 Puppets.attempt = function(obj, property, args, precheck) {
-  if (obj == null) { return; }
+  if (!obj) { return; }
   var fn = obj[prop];
   if (precheck || _.isFunction(fn)) {
     var apply = _.isArray(args);
