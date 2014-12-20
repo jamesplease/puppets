@@ -1,4 +1,3 @@
-puppets
-=======
+# puppets
 
-A work in progress.
+Modern Backbone.
