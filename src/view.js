@@ -9,6 +9,10 @@ var View = AbstractView.extend({
   // Options to be merged onto each instance
   viewOptions: ['childViews'],
 
+  // The default Region class. In most instances
+  // you should not need to override this
+  region: Puppets.Region,
+
   constructor: function(options) {
     Puppets.mergeOptions(this, options, this.viewOptions);
     this._regions = {};
@@ -17,7 +21,7 @@ var View = AbstractView.extend({
     // If there's no template, then this view is unlikely to be re-rendered,
     // and we can attach the childViews immediately. Otherwise, they'll be
     // attached each time the view is rendered
-    if (!this.template) {
+    if (!this.template && this.childViews) {
       this._addRegions(this.childViews);
     }
   },
@@ -31,19 +35,17 @@ var View = AbstractView.extend({
     var htmlString = '<div>' + Puppets.renderTemplate(this.template) + '</div>';
     var $domTree = $($.parseHTML(htmlString));
 
-    // If our regions are empty, then we should instantiate all of them
-    if (_.isEmpty(this._regions)) {
+    // If our regions are empty, then we should instantiate
+    // them if we have specified children views
+    if (_.isEmpty(this._regions) && this.childViews) {
       this._addRegions(this.childViews, $domTree);
     }
 
     // Otherwise, we need to check each of them to see if they're empty
+    // If they are, then we ignore it. If they are, 
     else {
-      var node, currentView;
       _.each(this._regions, function(region) {
-        currentView = region.currentView();
-        if (currentView) {
-          $domTree.find(region.selector).replaceWith(region.cloneTree());
-        }
+        $domTree.find(region.selector).replaceWith(region.cloneTree());
       }, this);
     }
 
@@ -74,7 +76,8 @@ var View = AbstractView.extend({
     return region ? region : this._addRegion(selector);
   },
 
-  // Create a new region. Optionally pass it a view
+  // Add a new region to this view, if we don't
+  // already have one. Optionally pass it a view
   // to display on creation
   _addRegion: function(selector, definition, $tree) {
     $tree = $tree || this.$el;
@@ -103,7 +106,15 @@ var View = AbstractView.extend({
   },
 
   _createRegion: function(options) {
-    return new this.Region(options);
+    return new this.region(options);
+  },
+
+  // If this view's element has been cloned, then we need to update
+  // its region's references recursively
+  _updateRegions: function() {
+    _.each(this._regions, function(region) {
+      region._updateEl(this.$el.find(region.selector));
+    }, this);
   },
 
   _throwRegionError: function(selector) {

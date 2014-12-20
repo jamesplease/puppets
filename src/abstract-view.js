@@ -18,10 +18,6 @@ var AbstractView = Backbone.View.extend({
     Backbone.View.prototype.constructor.apply(this, arguments);
   },
 
-  // The default Region class. In most instances
-  // you should not need to override this
-  Region: Puppets.Region,
-
   // Update the view's model
   setModel: function(model) {
     this.stopListeningToModel();

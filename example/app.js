@@ -1,29 +1,53 @@
+var count = 0;
+
 var MainView = Puppets.View.extend({
-  template: _.template('main view'),
+  template: _.template('<li>My contents</li><li>hi</li>'),
 });
 
 var NewMainView = Puppets.View.extend({
-  template: _.template('new main view')
+  initialize: function() {
+    this.on('render', this.onRender, this);
+  },
+
+  onRender: function() {
+    // this.$el.html(count++);
+  },
+
+  template: _.template('<div>thing</div>'),
+
+  childViews: {
+    div: MainView
+  }
 });
 
 var ModalView = Puppets.View.extend({
-  template: _.template('modal view')
+  initialize: function() {
+    window.modal = this;
+  },
+
+  template: _.template('modal view<p>still modal</p>'),
+
+  childViews: {
+    p: NewMainView
+  }
 });
 
 var RootView = Puppets.View.extend({
-  el: '.root',
+  el: '.primary',
+
+  template: _.template('<main></main><div class="modal"></div>'),
 
   // These will be created on instantiation
   childViews: {
-    main: {
-      view: MainView,
-      options: {color: 'blue'}
-    },
+    // main: {
+    //   view: MainView,
+    //   options: {color: 'blue'}
+    // },
     '.modal': ModalView
   },
 
-  // Change the footer view
-  changeFooter: function(show) {
+  // Change the main view
+  changeMain: function(show) {
     this.showChildView('main', NewMainView, {force: show});
   }
 });

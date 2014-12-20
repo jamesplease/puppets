@@ -46,16 +46,3 @@ Puppets._listenToApi = function(obj, events, methodName) {
       this[methodName](obj, event, method);
   }, this);
 };
-
-// A helper function, similar to _.result,
-// that will return the property on obj, unless obj
-// is undefined or null. Passes the 3rd params
-// as arguments to the property, if it is a method
-Puppets.attempt = function(obj, property, args, precheck) {
-  if (!obj) { return; }
-  var fn = obj[prop];
-  if (precheck || _.isFunction(fn)) {
-    var apply = _.isArray(args);
-    return apply ? fn.apply(obj, args) : fn(args);
-  }
-};

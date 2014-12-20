@@ -16,15 +16,38 @@ var Region = function(options) {
 _.extend(Region.prototype, {
   regionOptions: ['view', 'viewOptions', 'el', 'selector'],
 
+  // Retrieve the region's view
   currentView: function() {
     return this._view;
   },
 
+  // If this region has a view, then this
+  // will deep clone that view's DOM tree,
+  // including all event handlers. It will also
+  // update the region's element to be the new
+  // element
   cloneTree: function() {
-    return this._view.$el.clone(true, true);
+    if (!this._view) { return; }
+    var $clone = this._view.$el.clone();
+    this._updateEl($clone);
+    return $clone;
   },
 
-  // Show a new view in this region
+  // When the tree is cloned, the element
+  // that this region references will no
+  // longer be accurate. To make things right,
+  // we recursively update this region's
+  // element, and then recursively update
+  // the view's region's elements, as well
+  _updateEl: function($el) {
+    this.el = $el;
+    if (!this._view) { return; }
+    this._view.setElement($el);
+    this._view._updateRegions();
+  },
+
+  // Show a new view in this region. The old
+  // view will be disposed of
   show: function(view, options) {
     options = options || {};
 
@@ -35,8 +58,8 @@ _.extend(Region.prototype, {
     this._setView(view, options);
   },
 
-  // Set the view on the region, set this as its parent,
-  // then render it
+  // Set the view on the region, set this as
+  // its parent, then render it
   _setView: function(view, viewOptions) {
     if (!view) { return; }
     this._view = this._createView(view, viewOptions);
