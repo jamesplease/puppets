@@ -8,6 +8,11 @@ Puppets.mergeOptions = function(target, options, keys) {
   _.extend(target, _.pick(options, keys));
 };
 
+// Determine if `el` is a child of the document
+Puppets.isNodeAttached = function(el) {
+  return Puppets.$.contains(document.documentElement, el);
+};
+
 // Configure global template options to be
 // used during compilation. Works for both
 // Underscore and Handlebars templates

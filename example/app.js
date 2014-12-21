@@ -1,9 +1,12 @@
 var count = 0;
 
 var MainView = Puppets.View.extend({
-  template: _.template('<li>My contents</li><li>hi</li>'),
+  template: _.template('<li>My contents</li><li>hi</li><span>meow</span>'),
   initialize: function() {
     this.on('render', this.onRender, this);
+    this.on('attach', function() {
+      console.log('attached main!');
+    });
   },
 
   onRender: function() {
@@ -14,6 +17,9 @@ var MainView = Puppets.View.extend({
 var NewMainView = Puppets.View.extend({
   initialize: function() {
     this.on('render', this.onRender, this);
+    this.on('attach', function() {
+      console.log('attached new main!');
+    });
   },
 
   onRender: function() {
@@ -32,6 +38,9 @@ var NewMainView = Puppets.View.extend({
 var ModalView = Puppets.View.extend({
   initialize: function() {
     window.modal = this;
+    this.on('attach', function() {
+      console.log('attached modal!');
+    });
   },
 
   template: _.template('modal view<p>still modal</p>'),
@@ -42,16 +51,28 @@ var ModalView = Puppets.View.extend({
 });
 
 var RootView = Puppets.View.extend({
+  initialize: function() {
+    this.on('attach', function() {
+      console.log('attached root!');
+    });
+  },
+
+  ui: {
+    main: 'main',
+    modal: '.modal',
+    span: 'span'
+  },
+
   el: '.primary',
 
-  template: _.template('<main></main><div class="modal"></div>'),
+  template: _.template('<main></main><div class="modal"></div><span><%= name %></span>'),
 
   // These will be created on instantiation
   childViews: {
-    // main: {
-    //   view: MainView,
-    //   options: {color: 'blue'}
-    // },
+    main: {
+      view: MainView,
+      options: {color: 'blue'}
+    },
     '.modal': ModalView
   },
 
@@ -61,4 +82,6 @@ var RootView = Puppets.View.extend({
   }
 });
 
-var rootView = new RootView();
+var rootView = new RootView({
+  model: new Backbone.Model({name: 'james'})
+});

@@ -1,4 +1,4 @@
-var previousPuppets = Backbone.Puppets();
+var previousPuppets = Backbone.Puppets;
 
 var Puppets = Backbone.Puppets = {};
 

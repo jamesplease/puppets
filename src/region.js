@@ -2,8 +2,8 @@
 // Region
 // An object that controls an area of a
 // View where we want to display children.
-// Regions are implementation details and
-// should rarely, if ever, be modified directly
+// Regions are an implementation detail and
+// should rarely, if ever, be handled directly
 //
 
 var Region = function(options) {
@@ -14,7 +14,7 @@ var Region = function(options) {
 };
 
 _.extend(Region.prototype, {
-  regionOptions: ['view', 'viewOptions', 'el', 'selector'],
+  regionOptions: ['view', 'viewOptions', 'el', 'selector', '_hostView'],
 
   // Retrieve the region's view
   currentView: function() {
@@ -28,7 +28,7 @@ _.extend(Region.prototype, {
   // element
   cloneTree: function() {
     if (!this._view) { return; }
-    var $clone = this._view.$el.clone();
+    var $clone = this._view.$el.clone(true, true);
     this._updateEl($clone);
     return $clone;
   },
@@ -59,12 +59,31 @@ _.extend(Region.prototype, {
   },
 
   // Set the view on the region, set this as
-  // its parent, then render it
+  // its _hostView, then render it
   _setView: function(view, viewOptions) {
     if (!view) { return; }
     this._view = this._createView(view, viewOptions);
-    this._view._parent = this;
+    this._storeChildViewReference();
+    this._view._region = this;
     this._view.render();
+  },
+
+  // Store references to this region's view all the way up the view tree
+  _storeChildViewReference: function(view) {
+    view = view || this._view;
+    this._hostView._childViews.push(view);
+    if (this._hostView._region) {
+      this._hostView._region._storeChildViewReference(view);
+    }
+  },
+
+  // Removes references to this region's views from the entire view tree
+  _removeChildViewReference: function(view) {
+    view = view || this._view;
+    _.without(this._hostView._childViews, view);
+    if (this._hostView._region) {
+      this._hostView._region._removeChildViewReference(view);
+    }
   },
 
   // Creates a view with the el set to be this region's el
@@ -76,6 +95,7 @@ _.extend(Region.prototype, {
   _disposeView: function() {
     var view = this.currentView();
     if (!view) { return; }
+    this._removeChildViewReference();
     view.dispose();
   }
 }, Backbone.Events);

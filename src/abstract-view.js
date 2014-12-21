@@ -13,6 +13,7 @@ var AbstractView = Backbone.View.extend({
 
   constructor: function(options) {
     Puppets.mergeOptions(this, options, this.abstractViewOptions);
+    this._childViews = [];
     this.listenToModel();
     this.listenToCollection();
     Backbone.View.prototype.constructor.apply(this, arguments);

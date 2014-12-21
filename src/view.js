@@ -16,14 +16,22 @@ var View = AbstractView.extend({
   constructor: function(options) {
     Puppets.mergeOptions(this, options, this.viewOptions);
     this._regions = {};
+    this.$ui = {};
     AbstractView.prototype.constructor.apply(this, arguments);
 
-    // If there's no template, then this view is unlikely to be re-rendered,
-    // and we can attach the childViews immediately. Otherwise, they'll be
-    // attached each time the view is rendered
-    if (!this.template && this.childViews) {
+    // If this is a view that is already on the page, then
+    // we should attach the 
+    if (this._existingEl()) {
+      this._createUI();
       this._addRegions(this.childViews);
     }
+  },
+
+  // Duck-typing to determine if the view is an existing element
+  // We base this off of two facts: whether it has a template,
+  // and whether there are children nodes
+  _existingEl: function() {
+    return !this.template && this.$el.children().length;
   },
 
   // An intelligent render function. Renders the template,
@@ -31,30 +39,41 @@ var View = AbstractView.extend({
   render: function(options) {
     this.trigger('before:render', this, options);
 
+    var data = this._serializeData();
+
     // Generate the new DOM tree. We wrap it in a div so that we can
     // easily sort through the children to find selectors. The
     // wrapper is removed at the end
-    var htmlString = '<div>' + Puppets.renderTemplate(this.template) + '</div>';
-    var $domTree = Puppets.$($.parseHTML(htmlString));
+    var htmlString = '<div>' + Puppets.renderTemplate(this.template, data) + '</div>';
+    var $newEl = Puppets.$(htmlString);
+
+    this._createUI($newEl);
 
     // If our regions are empty, then we should instantiate
     // them if we have specified children views
     if (_.isEmpty(this._regions) && this.childViews) {
-      this._addRegions(this.childViews, $domTree);
+      this._addRegions(this.childViews, $newEl);
     }
 
     // Otherwise, we need to check each of them to see if they're empty
-    // If they are, then we ignore it. If they are, 
+    // If they are, then we ignore it.
     else {
       _.each(this._regions, function(region) {
-        $domTree.find(region.selector).replaceWith(region.cloneTree());
+        $newEl.find(region.selector).replaceWith(region.cloneTree());
       }, this);
     }
 
     // Empty the contents of our element,
     // then append the new tree. We use .children()
     // to remove the div wrapper from above
-    this.$el.empty().append($domTree.contents());
+    this.$el.empty().append($newEl.contents());
+
+    if (Puppets.isNodeAttached(this.el)) {
+      _.each(this._childViews, function(child) {
+        child.trigger('attach', child, this);
+      });
+      this.trigger('attach', this, undefined);
+    };
 
     this.trigger('render', this, options);
     return this;
@@ -73,6 +92,33 @@ var View = AbstractView.extend({
     return this._getRegion(selector).currentView();
   },
 
+  // Prepares our model *or* collection for displaying
+  // in a template
+  _serializeData: function() {
+    if (!this.model && !this.collection) { return; }
+    return this.model ? this._serializeModel() : { models: this._serializeCollection() };
+  },
+
+  // Prepare a model for display in a template
+  _serializeModel: function(model) {
+    model = model || this.model;
+    return _.clone(this.model.attributes);
+  },
+
+  // Prepare a collection for display in a template
+  _serializeCollection: function(collection) {
+    collection = collection || this.collection;
+    return collection.map(function(model) { return this._serializeModel(model); }, this);
+  },
+
+  // Create cached references to elements within this view
+  _createUI: function($el) {
+    $el = $el || this.$el;
+    _.each(_.result(this, 'ui'), function(selector, name) {
+      this.$ui[name] = $el.find(selector);
+    }, this);
+  },
+
   // Return the region, if it exists. If not,
   // create the region and return it
   _getRegion: function(selector) {
@@ -80,33 +126,33 @@ var View = AbstractView.extend({
     return region ? region : this._addRegion(selector);
   },
 
+  // Add a hash of regions. Used internally to create the `childViews`
+  _addRegions: function(regionDefinitions, $el) {
+    _.each(regionDefinitions, function(view, selector) {
+      this._addRegion(selector, view, $el);
+    }, this);
+    return this;
+  },
+
   // Add a new region to this view, if we don't
   // already have one. Optionally pass it a view
   // to display on creation
-  _addRegion: function(selector, definition, $tree) {
-    $tree = $tree || this.$el;
+  _addRegion: function(selector, definition, $el) {
+    $el = $el || this.$el;
     // Don't override existing regions
     if (this._regions[selector]) { return; }
-    var $el = $tree.find(selector);
+    var $el = $el.find(selector);
     if (!$el) { this._throwRegionError(selector); }
     var fnDefinition = _.isFunction(definition);
     var options = {
+      _hostView: this,
       selector: selector,
       el: $el,
       view: fnDefinition ? definition : definition.view,
       viewOptions: fnDefinition ? {} : definition.options
     };
     var region = this._createRegion(options);
-    region._parent = this;
     this._regions[selector] = region;
-    return this;
-  },
-
-  // Add a hash of regions. Used internally to create the `childViews`
-  _addRegions: function(regionDefinitions, $tree) {
-    _.each(regionDefinitions, function(view, selector) {
-      this._addRegion(selector, view, $tree);
-    }, this);
     return this;
   },
 
@@ -115,7 +161,7 @@ var View = AbstractView.extend({
     return new this.region(options);
   },
 
-  // If this view's element has been cloned, then we need to update
+  // After this view's element has been cloned, we need to update
   // its region's references recursively
   _updateRegions: function() {
     _.each(this._regions, function(region) {
