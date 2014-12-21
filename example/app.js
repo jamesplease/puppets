@@ -85,3 +85,7 @@ var RootView = Puppets.View.extend({
 var rootView = new RootView({
   model: new Backbone.Model({name: 'james'})
 });
+
+var app = new Puppets.Application();
+
+app.on('start', rootView.render, rootView);

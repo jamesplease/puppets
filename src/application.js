@@ -4,22 +4,23 @@
 //
 
 Puppets.Application = function() {
-  this.cid = _.uniqueId('c');
+  this.cid = _.uniqueId('app');
   this.initialize.apply(this, arguments);
 };
 
 _.extend(Puppets.Application.prototype, {
+  initialize: function() {},
 
   // A hook that might be useful during the start-up phase
   // of your application.
-  start: function() {
-    this.trigger.apply(this, 'start', arguments);
+  start: function(options) {
+    this.trigger('start', options);
   },
 
   // If you choose to have multiple applications, then you
   // may also choose to stop the application
-  stop: function() {
-    this.trigger.apply(this, 'stop', arguments);
+  stop: function(options) {
+    this.trigger('stop', options);
   }
 }, Backbone.Events);
 
