@@ -69,7 +69,6 @@
     "_": true,
     "console": true,
     "$": true,
-    "Puppets": true,
-    "AbstractView": true
+    "Puppets": true
   }
 }

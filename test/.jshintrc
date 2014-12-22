@@ -15,7 +15,7 @@
   "nonew"         : true,
   "plusplus"      : true,
   "undef"         : true,
-  "unused"         : true,
+  "unused"        : true,
   "strict"        : false,
   "trailing"      : true,
 
