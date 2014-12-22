@@ -50,26 +50,27 @@ _.extend(Region.prototype, {
   _setView: function(view, viewOptions) {
     if (!view) { return; }
     this._view = this._createView(view, viewOptions);
-    this._storeChildViewReference();
+    this._addReference();
     this._view._region = this;
     this._view.render();
   },
 
-  // Store references to this region's view all the way up the view tree
-  _storeChildViewReference: function(view) {
+  // Add references to this region's view all the way up the view tree
+  _addReference: function(view) {
     view = view || this._view;
     this._hostView._childViews.push(view);
     if (this._hostView._region) {
-      this._hostView._region._storeChildViewReference(view);
+      this._hostView._region._addReference(view);
     }
   },
 
-  // Removes references to this region's views from the entire view tree
-  _removeChildViewReference: function(view) {
+  // Remove references to view from the entire view tree
+  _removeReference: function(view) {
     view = view || this._view;
+    delete view._region;
     _.without(this._hostView._childViews, view);
     if (this._hostView._region) {
-      this._hostView._region._removeChildViewReference(view);
+      this._hostView._region._removeReference(view);
     }
   },
 
@@ -95,7 +96,7 @@ _.extend(Region.prototype, {
   _disposeView: function() {
     var view = this.currentView();
     if (!view) { return; }
-    this._removeChildViewReference();
+    this._removeReference();
     view.dispose();
   }
 }, Backbone.Events);

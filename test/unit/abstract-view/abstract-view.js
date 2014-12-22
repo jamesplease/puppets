@@ -1,0 +1,2 @@
+describe('AbstractView:', function() {
+});

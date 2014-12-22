@@ -19,33 +19,13 @@ Puppets.AbstractView = Backbone.View.extend({
     Backbone.View.prototype.constructor.apply(this, arguments);
   },
 
-  // Update the view's model
-  setModel: function(model) {
-    this.stopListeningToModel();
-    this.model = model;
-    this.listenToModel();
-  },
-
-  // Update the view's collection
-  setCollection: function(collection) {
-    this.stopListeningToCollection();
-    this.collection = collection;
-    this.listenToModel(collection);
-  },
-
   // These four methods manage events specified via
   // modelEvents and collectionEvents
   listenToModel: function() {
     Puppets.listenToObject(this, this.model, _.result(this, 'modelEvents'));
   },
-  stopListeningToModel: function() {
-    Puppets.stopListeningToObject(this, this.model, _.result(this, 'modelEvents'));
-  },
   listenToCollection: function() {
     Puppets.listenToObject(this, this.collection, _.result(this, 'collectionEvents'));
-  },
-  stopListeningToCollection: function() {
-    Puppets.stopListeningToObject(this, this.collection, _.result(this, 'collectionEvents'));
   },
 
   // Remove this view from the DOM, and remove its event handlers
@@ -62,7 +42,6 @@ Puppets.AbstractView = Backbone.View.extend({
   dispose: function() {
     this.trigger('before:dispose', this);
     this.stopListening();
-    delete this._parent;
     this.trigger('dispose', this);
     return this;
   }

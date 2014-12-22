@@ -39,11 +39,12 @@ Puppets.listenToObject = function(obj, target, events) {
   Puppets._listenToApi(obj, target, events, 'listenTo');
 };
 
-// Stop listening to a hash of events
+// Stop listening to an object's events, specified as a hash
 Puppets.stopListeningToObject = function(obj, target, events) {
   Puppets._listenToApi(obj, target, events, 'stopListening');
 };
 
+// The internal method to power listenToObject and stopListeningToObject
 Puppets._listenToApi = function(obj, target, events, methodName) {
   if (!obj || !target || !events) { return; }
   _.each(events, function(method, event) {
