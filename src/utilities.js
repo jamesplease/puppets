@@ -35,19 +35,19 @@ Puppets.renderTemplate = function(compiledTemplate, data) {
 };
 
 // Accepts a hash of events to use for `listenTo`.
-Puppets.listenToObject = function(obj, events) {
-  Puppets._listenToApi(obj, events, 'listenTo');
+Puppets.listenToObject = function(obj, target, events) {
+  Puppets._listenToApi(obj, target, events, 'listenTo');
 };
 
 // Stop listening to a hash of events
-Puppets.stopListeningToObject = function(obj, events) {
-  Puppets._listenToApi(obj, events, 'stopListening');
+Puppets.stopListeningToObject = function(obj, target, events) {
+  Puppets._listenToApi(obj, target, events, 'stopListening');
 };
 
-Puppets._listenToApi = function(obj, events, methodName) {
-  if (!obj || !events) { return; }
+Puppets._listenToApi = function(obj, target, events, methodName) {
+  if (!obj || !target || !events) { return; }
   _.each(events, function(method, event) {
-      if (!_.isFunction(method)) { method = this[method]; }
-      this[methodName](obj, event, method);
-  }, this);
+      if (!_.isFunction(method)) { method = obj[method]; }
+      obj[methodName](target, event, method);
+  });
 };

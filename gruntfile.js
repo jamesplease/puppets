@@ -70,7 +70,7 @@ module.exports = function(grunt) {
         },
         src: [
           'test/setup/helpers.js',
-          'test/unit/*.js'
+          'test/unit/**/*.js'
         ]
       }
     }
