@@ -69,7 +69,7 @@ var View = Puppets.AbstractView.extend({
     this.$el.empty().append($newEl.contents());
 
     if (Puppets.isNodeAttached(this.el)) {
-      _.each(this.childViews, function(child) {
+      _.each(this._childViews, function(child) {
         child.trigger('attach', child, this, false);
       });
       this.trigger('attach', this, undefined, true);
