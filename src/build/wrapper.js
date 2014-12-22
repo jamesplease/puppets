@@ -18,7 +18,6 @@
   // @include ../puppets.js
   // @include ../utilities.js
   // @include ../application.js
-  // @include ../animate.js
   // @include ../region.js
   // @include ../abstract-view.js
   // @include ../view.js
