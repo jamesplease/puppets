@@ -13,7 +13,7 @@ describe('compileTemplate:', function() {
     it('should pass the templateString to _.template', function() {
       expect(_.template)
         .to.have.been.calledOnce
-        .and.to.have.been.always.calledWith(this.templateString, {});
+        .and.to.have.been.always.calledWith(this.templateString, undefined, {});
     });
 
     it('should return the return value from _.template', function() {
@@ -29,7 +29,7 @@ describe('compileTemplate:', function() {
     it('should pass the templateString and options to _.template', function() {
       expect(_.template)
         .to.have.been.calledOnce
-        .and.to.have.been.always.calledWith(this.templateString, {color:'blue'});
+        .and.to.have.been.always.calledWith(this.templateString, undefined, {color:'blue'});
     });
 
     it('should return the return value from _.template', function() {
@@ -46,7 +46,7 @@ describe('compileTemplate:', function() {
     it('should pass the templateOptions into _.template', function() {
       expect(_.template)
         .to.have.been.calledOnce
-        .and.to.have.been.always.calledWith(this.templateString, {name:'james'});
+        .and.to.have.been.always.calledWith(this.templateString, undefined, {name:'james'});
     });
 
     it('should return the return value from _.template', function() {
@@ -63,7 +63,7 @@ describe('compileTemplate:', function() {
     it('should merge the two, passing them into _.template', function() {
       expect(_.template)
         .to.have.been.calledOnce
-        .and.to.have.been.always.calledWith(this.templateString, {name:'james', color:'blue'});
+        .and.to.have.been.always.calledWith(this.templateString, undefined, {name:'james', color:'blue'});
     });
 
     it('should return the return value from _.template', function() {

@@ -24,7 +24,7 @@ Puppets.templateOptions = {};
 // Override this if you're not precompiling and you want to use,
 // say, Handlebars
 Puppets.compileTemplate = function(templateString, options) {
-  return _.template(templateString, _.extend(Puppets.templateOptions, options));
+  return _.template(templateString, undefined, _.extend(Puppets.templateOptions, options));
 };
 
 // Convert a template function into HTML

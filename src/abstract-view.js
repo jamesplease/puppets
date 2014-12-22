@@ -27,6 +27,12 @@ Puppets.AbstractView = Backbone.View.extend({
   listenToCollection: function() {
     Puppets.listenToObject(this, this.collection, _.result(this, 'collectionEvents'));
   },
+  stopListeningToModel: function() {
+    Puppets.stopListeningToObject(this, this.model, _.result(this, 'modelEvents'));
+  },
+  stopListeningToCollection: function() {
+    Puppets.stopListeningToObject(this, this.collection, _.result(this, 'collectionEvents'));
+  },
 
   // Remove this view from the DOM, and remove its event handlers
   remove: function() {

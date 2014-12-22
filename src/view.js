@@ -102,7 +102,7 @@ var View = Puppets.AbstractView.extend({
   // Prepare a model for display in a template
   _serializeModel: function(model) {
     model = model || this.model;
-    return _.clone(this.model.attributes);
+    return _.clone(model.attributes);
   },
 
   // Prepare a collection for display in a template
