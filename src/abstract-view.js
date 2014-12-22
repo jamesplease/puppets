@@ -6,7 +6,7 @@
 // for Puppets' two views.
 //
 
-var AbstractView = Backbone.View.extend({
+Puppets.AbstractView = Backbone.View.extend({
 
   // Options to be merged onto each instance
   abstractViewOptions: ['model', 'collection', 'modelEvents', 'collectionEvents', 'template'],
@@ -32,7 +32,6 @@ var AbstractView = Backbone.View.extend({
     this.collection = collection;
     this.listenToModel(collection);
   },
-
 
   // These four methods manage events specified via
   // modelEvents and collectionEvents
@@ -68,5 +67,3 @@ var AbstractView = Backbone.View.extend({
     return this;
   }
 });
-
-Puppets.AbstractView = AbstractView;

@@ -1,11 +1,5 @@
 module.exports = function(grunt) {
-  // require('load-grunt-tasks')(grunt);
-
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-preprocess');
-  grunt.loadNpmTasks('grunt-template');
+  require('load-grunt-tasks')(grunt);
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -63,11 +57,28 @@ module.exports = function(grunt) {
         },
         src: ['src/*.js', '!src/build/wrapper.js']
       }
+    },
+
+    
+    mochaTest: {
+      spec: {
+        options: {
+          require: 'test/setup/node.js',
+          reporter: 'dot',
+          clearRequireCache: true,
+          mocha: require('mocha')
+        },
+        src: [
+          'test/setup/helpers.js',
+          'test/unit/*.js'
+        ]
+      }
     }
   });
 
   grunt.registerTask('test', 'Test the library', [
-    'jshint'
+    'jshint',
+    'mochaTest'
   ]);
 
   grunt.registerTask('build', 'Build the library', [
@@ -78,7 +89,5 @@ module.exports = function(grunt) {
     'uglify'
   ]);
 
-  grunt.registerTask('default', 'An alias of test', [
-    'test'
-  ]);
+  grunt.registerTask('default', 'An alias of test', ['test']);
 };

@@ -4,7 +4,7 @@
 // manually-managed nested children
 //
 
-var View = AbstractView.extend({
+var View = Puppets.AbstractView.extend({
 
   // Options to be merged onto each instance
   viewOptions: ['childViews'],
@@ -17,7 +17,7 @@ var View = AbstractView.extend({
     Puppets.mergeOptions(this, options, this.viewOptions);
     this._regions = {};
     this.$ui = {};
-    AbstractView.prototype.constructor.apply(this, arguments);
+    Puppets.AbstractView.prototype.constructor.apply(this, arguments);
 
     // If this is a view that is already on the page, then
     // we should attach the 
@@ -69,11 +69,11 @@ var View = AbstractView.extend({
     this.$el.empty().append($newEl.contents());
 
     if (Puppets.isNodeAttached(this.el)) {
-      _.each(this._childViews, function(child) {
-        child.trigger('attach', child, this);
+      _.each(this.childViews, function(child) {
+        child.trigger('attach', child, this, false);
       });
-      this.trigger('attach', this, undefined);
-    };
+      this.trigger('attach', this, undefined, true);
+    }
 
     this.trigger('render', this, options);
     return this;
@@ -141,13 +141,13 @@ var View = AbstractView.extend({
     $el = $el || this.$el;
     // Don't override existing regions
     if (this._regions[selector]) { return; }
-    var $el = $el.find(selector);
-    if (!$el) { this._throwRegionError(selector); }
+    var $regionEl = $el.find(selector);
+    if (!$regionEl) { this._throwRegionError(selector); }
     var fnDefinition = _.isFunction(definition);
     var options = {
       _hostView: this,
       selector: selector,
-      el: $el,
+      el: $regionEl,
       view: fnDefinition ? definition : definition.view,
       viewOptions: fnDefinition ? {} : definition.options
     };
