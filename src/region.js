@@ -33,19 +33,6 @@ _.extend(Region.prototype, {
     return $clone;
   },
 
-  // When the tree is cloned, the element
-  // that this region references will no
-  // longer be accurate. To make things right,
-  // we recursively update this region's
-  // element, and then recursively update
-  // the view's region's elements, as well
-  _updateEl: function($el) {
-    this.el = $el;
-    if (!this._view) { return; }
-    this._view.setElement($el);
-    this._view._updateRegions();
-  },
-
   // Show a new view in this region. The old
   // view will be disposed of
   show: function(view, options) {
@@ -84,6 +71,19 @@ _.extend(Region.prototype, {
     if (this._hostView._region) {
       this._hostView._region._removeChildViewReference(view);
     }
+  },
+
+  // When the tree is cloned, the element
+  // that this region references will no
+  // longer be accurate. To make things right,
+  // we recursively update this region's
+  // element, and then recursively update
+  // the view's region's elements, as well
+  _updateEl: function($el) {
+    this.el = $el;
+    if (!this._view) { return; }
+    this._view.setElement($el);
+    this._view._updateRegions();
   },
 
   // Creates a view with the el set to be this region's el

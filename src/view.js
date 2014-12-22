@@ -27,13 +27,6 @@ var View = Puppets.AbstractView.extend({
     }
   },
 
-  // Duck-typing to determine if the view is an existing element
-  // We base this off of two facts: whether it has a template,
-  // and whether there are children nodes
-  _existingEl: function() {
-    return !this.template && this.$el.children().length;
-  },
-
   // An intelligent render function. Renders the template,
   // and does not destroy any nested views
   render: function(options) {
@@ -90,6 +83,13 @@ var View = Puppets.AbstractView.extend({
   // Retrieve the `view` contained in `selector`
   getChildView: function(selector) {
     return this._getRegion(selector).currentView();
+  },
+
+  // Duck-typing to determine if the view is an existing element
+  // We base this off of two facts: whether it has a template,
+  // and whether there are children nodes
+  _existingEl: function() {
+    return !this.template && this.$el.children().length;
   },
 
   // Prepares our model *or* collection for displaying
