@@ -9,7 +9,6 @@
 var Region = function(options) {
   Puppets.mergeOptions(this, options, this.regionOptions);
   this.cid = _.uniqueId('r');
-  this.selector = options.selector;
   this._setView(options.view, options.viewOptions);
 };
 

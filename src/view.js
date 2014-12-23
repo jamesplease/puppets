@@ -9,10 +9,6 @@ var View = Puppets.AbstractView.extend({
   // Options to be merged onto each instance
   viewOptions: ['childViews'],
 
-  // The default Region class. In most instances
-  // you should not need to override this
-  region: Puppets.Region,
-
   constructor: function(options) {
     Puppets.mergeOptions(this, options, this.viewOptions);
     this._regions = {};
@@ -68,8 +64,7 @@ var View = Puppets.AbstractView.extend({
       this.trigger('attach', this, undefined, true);
     }
 
-    this.trigger('render', this, options);
-    return this;
+    return this.trigger('render', this, options);
   },
 
   // Display `view` in the region specified by `selector`
@@ -156,9 +151,13 @@ var View = Puppets.AbstractView.extend({
     return this;
   },
 
+  // The default Region class. In most instances
+  // you should not need to override this
+  _region: Puppets.Region,
+
   // The method that creates a new region
   _createRegion: function(options) {
-    return new this.region(options);
+    return new this._region(options);
   },
 
   // After this view's element has been cloned, we need to update

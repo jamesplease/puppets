@@ -1,7 +1,11 @@
 describe('Application:', function() {
-  describe('the prototype', function() {
+  describe('instance and static props', function() {
     it('should extend from Backbone.Events', function() {
-      expect(Puppets.Application.prototype).to.contain.keys('on', 'off', 'listenTo', 'stopListening');
+      expect(Puppets.Application.prototype).to.contain.keys(_.keys(Backbone.Events));
+    });
+
+    it('should have Puppets.extend', function() {
+      expect(Puppets.Application.extend).to.equal(Puppets.extend);
     });
   });
 

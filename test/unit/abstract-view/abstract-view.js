@@ -13,14 +13,34 @@ describe('AbstractView:', function() {
         .and.to.have.always.been.calledWith({name: 'james', modelEvents:undefined}, false);
     });
 
-    it('should only merge options from abstractViewOptions', function() {
-      expect(this.abstractView).to.contain.keys('modelEvents');
-      expect(this.abstractView).to.not.contain.keys('name');
-    });
-
     it('should call listenToModel and listenToCollection', function() {
       expect(this.abstractView.listenToModel).to.have.been.calledOnce;
       expect(this.abstractView.listenToCollection).to.have.been.calledOnce;
+    });
+  });
+
+  describe('when passing in options to an AbstractView', function() {
+    beforeEach(function() {
+      this.sinon.stub(Backbone.View.prototype, 'constructor');
+      this.sinon.stub(Puppets.AbstractView.prototype, 'listenToModel');
+      this.sinon.stub(Puppets.AbstractView.prototype, 'listenToCollection');
+      this.abstractView = new Puppets.AbstractView({
+        model: true,
+        collection: true,
+        modelEvents: true,
+        collectionEvents: true,
+        template: true,
+        color: 'blue',
+        name: 'james'
+      });
+    });
+
+    it('should merge in the options from abstractViewOptions', function() {
+      expect(this.abstractView).to.contain.keys(this.abstractView.abstractViewOptions);
+    });
+
+    it('should ignore everything else', function() {
+      expect(this.abstractView).to.not.contain.keys('color', 'name');
     });
   });
 
