@@ -1,0 +1,47 @@
+{
+  "name": "puppets",
+  "version": "0.0.1",
+  "description": "Future Backbone.",
+  "main": "dist/puppets.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "grunt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Puppets/puppets.git"
+  },
+  "keywords": [
+    "Backbone",
+    "Puppets",
+    "views",
+    "nesting"
+  ],
+  "author": "Jmeas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Puppets/puppets/issues"
+  },
+  "homepage": "https://github.com/Puppets/puppets",
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "grunt": "~0.4.5",
+    "grunt-contrib-concat": "^0.4.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-uglify": "^0.4.0",
+    "grunt-mocha-test": "^0.12.4",
+    "grunt-preprocess": "4.0.0",
+    "grunt-template": "^0.2.3",
+    "jquery": "^2.1.3",
+    "jsdom": "^1.5.0",
+    "load-grunt-tasks": "^1.0.0",
+    "sinon": "^1.12.2",
+    "sinon-chai": "^2.6.0"
+  },
+  "dependencies": {
+    "backbone": "^1.1.2",
+    "underscore": "^1.7.0"
+  }
+}
