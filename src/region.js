@@ -9,7 +9,7 @@
 var Region = function(options) {
   Puppets.mergeOptions(this, options, this.regionOptions);
   this.cid = _.uniqueId('r');
-  this._setView(options.view, options.viewOptions);
+  this._setView(this.view, this.viewOptions);
 };
 
 _.extend(Region.prototype, {

@@ -1,6 +1,8 @@
 //
 // Application
-// The starting point of any Puppets application.
+// The starting point of any Puppets application. It
+// can also be used as the foundation for a modules/subapps
+// implementation
 //
 
 Puppets.Application = function() {
